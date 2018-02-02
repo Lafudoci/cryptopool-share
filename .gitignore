@@ -1,0 +1,4 @@
+*.pyc
+credit.json
+lastpay.json
+payout_share.csv
