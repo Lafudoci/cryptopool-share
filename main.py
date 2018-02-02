@@ -86,9 +86,16 @@ def checkPay(miners_data):
 
 
 while(True):
-	if ( time.time() - last_check > scan_interval*10):
+	if ( time.time() - last_check > scan_interval*60):
 		
-		miners_data = checkworker.ethtwgpumine()
+		while(True):
+			miners_data = checkworker.ethtwgpumine()
+			if miners_data == -1:
+				print('Can not get data from pool, will retry in 10s' )
+				time.sleep(10)
+			else:
+				break
+
 
 		calculateCredit(miners_data)
 

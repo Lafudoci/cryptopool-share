@@ -15,11 +15,11 @@ def ethtwgpumine():
 			miners_data = json.loads(resp.text)		
 			return miners_data
 		else:
-			print('API錯誤')
+			print('API error')
 			return -1
 	except requests.exceptions.RequestException as err:
-		print('連線逾時。')
-		return -2
+		print('Requests error')
+		return -1
 
 
 if __name__ == '__main__':
