@@ -7,22 +7,18 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 def apirequest(api_url):
-	i = 0
-	while(i<3):
-		try:    
-			resp = requests.get(url=api_url, timeout = 10)
-			if str(resp) == '<Response [200]>':
-				resp_data = json.loads(resp.text)
-				print(api_url[0:24]+'--> Pool API OK')
-				return resp_data
-			else:
-				print(api_url[0:24]+'--> API error')
-				i += 1
-				return -1
-		except requests.exceptions.RequestException as err:
-			print(api_url[0:24]+'--> Requests error')
-			i += 1
+	try:    
+		resp = requests.get(url=api_url, timeout = 10)
+		if str(resp) == '<Response [200]>':
+			resp_data = json.loads(resp.text)
+			print(api_url[0:24]+'--> Pool APIrequest OK')
+			return resp_data
+		else:
+			print(api_url[0:24]+'--> APIrequest error')
 			return -1
+	except requests.exceptions.RequestException as err:
+		print(api_url[0:24]+'--> APIrequest error')
+		return -1
 
 
 def calculateCredit(work_credit):
@@ -55,7 +51,6 @@ def checkPay(pool):
 
 		miners_data = apirequest(api_url)
 
-
 		pay_hash = miners_data['payments'][-1]['tx_hash']
 		status = miners_data['payments'][-1]['status']
 		paid = miners_data['payments'][-1]['paid']
@@ -75,6 +70,15 @@ def checkPay(pool):
 	elif pool == 'nanopoolxmr':						# get last payment hash from nanopool
 		api_url='https://api.nanopool.org/v1/xmr/payments/'+ config['xmr.nanopool.org']['address']        
 		miners_data = apirequest(api_url)
+
+		if miners_data == -1:							# return -1 if API error
+			print('API HTTP error')
+			return -1
+		elif miners_data['status'] == False:			# return -1 if resp status error
+			print('API error: '+ miners_data['data'])
+			return -1
+		else: print('Good API Response')
+
 		pay_hash = miners_data['data'][0]['txHash']
 		status = miners_data['data'][-1]['confirmed']
 		paid = miners_data['data'][-1]['amount']
@@ -139,6 +143,15 @@ def nanopoolxmr():
 
 	api_url='https://api.nanopool.org/v1/xmr/workers/'+ config['xmr.nanopool.org']['address']        
 	miners_data = apirequest(api_url)
+	#print(miners_data)
+
+	if miners_data == -1:							# return -1 if API error
+		print('API HTTP error')
+		return -1
+	elif miners_data['status'] == False:			# return -1 if resp status error
+		print('API error: '+ miners_data['data'])
+		return -1
+	else: print('Good API Response')
 
 	try:
 		cd = open('nanopoolxmr_credit', 'r')		# read credit from cache
@@ -178,4 +191,4 @@ if __name__ == '__main__':
     # ethtwgpumine()
     nanopoolxmr()
     # checkPay('ethwgpu')
-    # checkPay('nanopoolxmr')
+    checkPay('nanopoolxmr')

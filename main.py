@@ -19,22 +19,30 @@ while(True):
 		while(True):
 			work_credit = checkworker.nanopoolxmr()		#get and sum worker credit from nanopool
 			if work_credit == -1:
-				print('Can not get data from pool, will retry in 10s' )
-				time.sleep(10)
+				print('Can not get data from pool, will retry in 5s' )
+				time.sleep(5)
 			else:
 				break
 
 		work_share = checkworker.calculateCredit(work_credit)		# calculate workers's share
 
-		payment = checkworker.checkPay('nanopoolxmr')				# check last payment from pool
+		while (True):
+			payment = checkworker.checkPay('nanopoolxmr')				# check last payment from pool
+
+			if payment == -1:
+				print('Can not get payment from pool, will retry in 5s' )
+				time.sleep(5)
+			else:
+				break
 
 		if payment == -2:
 			print('Wait next check in '+str(scan_interval)+' mins')
 
-		elif payment != -1:
+		else:
 			for worker,percent in work_share.items():				# divide profit by shares
 				final_payout[worker] = float(payment['paid']) * float(percent)
 			print('Final payout table:\n'+json.dumps(final_payout))
+			print('Wait next check in '+str(scan_interval)+' mins')
 			loacal_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 			pay_list = ''
@@ -50,7 +58,7 @@ while(True):
 			work_share = {}
 			all_credit = 0
 			final_payout = {}
-		
+			
 		last_check = time.time()
 
 time.sleep(5)
