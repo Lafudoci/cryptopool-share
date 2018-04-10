@@ -58,6 +58,10 @@ while(True):
 			work_share = {}
 			all_credit = 0
 			final_payout = {}
+
+			cd = open('nanopoolxmr_credit', 'w')			# write the credit back to cache
+			cd.write(json.dumps(work_credit))
+			cd.close()
 			
 		last_check = time.time()
 
