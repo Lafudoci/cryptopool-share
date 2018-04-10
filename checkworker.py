@@ -80,8 +80,8 @@ def checkPay(pool):
 		else: print('Good API Response')
 
 		pay_hash = miners_data['data'][0]['txHash']
-		status = miners_data['data'][-1]['confirmed']
-		paid = miners_data['data'][-1]['amount']
+		status = miners_data['data'][0]['confirmed']
+		paid = miners_data['data'][0]['amount']
 		if pay_hash != last_hash and status == True :
 			print(pool+': New payment was found!: '+ str(paid))
 			print(pool+': Last payment:\n'+pay_hash)
