@@ -49,18 +49,25 @@ while(True):
 			for worker,pay in final_payout.items():
 				pay_list += '%s,%.17f\n'%(worker,pay)
 
+			cd = open('nanopoolxmr_credit', 'r')			# read sample size from cache
+			cache_data = json.loads(cd.read())
+			sample_size = cache_data['sample_size']
+			cd.close()
+
 			pay_sheet = open('payout_share.csv', 'a')
-			pay_sheet.write('%s,%s\n%s\n' % (loacal_time, payment['Last_hash'], pay_list))
-			
+			pay_sheet.write('%s,%s,%d\n%s\n' % (loacal_time, payment['Last_hash'],sample_size, pay_list))
 			pay_sheet.close()
 
 			work_credit = {}
 			work_share = {}
 			all_credit = 0
 			final_payout = {}
+			sample_size = 0
 
 			cd = open('nanopoolxmr_credit', 'w')			# write the credit back to cache
-			cd.write(json.dumps(work_credit))
+			cache_data['work_credit'] = work_credit
+			cache_data['sample_size'] = sample_size
+			cd.write(json.dumps(cache_data))
 			cd.close()
 			
 		last_check = time.time()

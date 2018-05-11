@@ -147,6 +147,7 @@ def nanopoolxmr():
 	api_url='https://api.nanopool.org/v1/xmr/workers/'+ config['xmr.nanopool.org']['address']        
 	miners_data = apirequest(api_url)
 	#print(miners_data)
+	cache_data = {}
 
 	if miners_data == -2:							# return -1 if API exception error
 		print('API HTTP error')
@@ -161,11 +162,14 @@ def nanopoolxmr():
 
 	try:
 		cd = open('nanopoolxmr_credit', 'r')		# read credit from cache
-		work_credit = json.loads(cd.read())
+		cache_data = json.loads(cd.read())
+		work_credit = cache_data['work_credit']
+		sample_size = cache_data['sample_size']
 		cd.close()
 	except (OSError, IOError) as e:
 		print('New recording')
 		work_credit = {}
+		sample_size = 0
 
 	now = time.time()
 	msg = ''
@@ -185,8 +189,10 @@ def nanopoolxmr():
 	print(time.strftime("======== %Y-%m-%d %H:%M:%S ========", time.localtime()))
 	print('Real-time status:\n'+msg)
 	
-	cd = open('nanopoolxmr_credit', 'w')			# write the credit back to cache
-	cd.write(json.dumps(work_credit))
+	cd = open('nanopoolxmr_credit', 'w')			# write the credit back to cache and sample_size + 1 
+	cache_data['work_credit'] = work_credit
+	cache_data['sample_size'] = sample_size+1
+	cd.write(json.dumps(cache_data))
 	cd.close()
 
 	print('Total hashs among workers:\n'+json.dumps(work_credit)+'\n')
@@ -197,4 +203,4 @@ if __name__ == '__main__':
     # ethtwgpumine()
     nanopoolxmr()
     # checkPay('ethwgpu')
-    checkPay('nanopoolxmr')
+    # checkPay('nanopoolxmr')
