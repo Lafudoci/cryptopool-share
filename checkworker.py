@@ -14,7 +14,7 @@ def apirequest(api_url):
 			print(api_url[0:24]+'--> Pool APIrequest OK')
 			return resp_data
 		else:
-			print(api_url[0:24]+'--> APIrequest error : Response was not 200')
+			print(api_url[0:24]+'--> APIrequest error :'+ str(resp))
 			return -1
 	except requests.exceptions.RequestException as err:
 		print(api_url[0:24]+'--> APIrequest error')
@@ -75,7 +75,7 @@ def checkPay(pool):
 			print('API HTTP error')
 			return -1
 		elif miners_data == -1:
-			print('API error: '+ miners_data['error'])	# return -1 if http resp not 200
+			print('API error: http resp not 200')		# return -1 if http resp not 200
 			return -1
 		elif miners_data['status'] == False:			# return -1 if resp status false
 			print('API error: '+ miners_data['data'])
@@ -153,7 +153,7 @@ def nanopoolxmr():
 		print('API HTTP error')
 		return -1
 	elif miners_data == -1:
-		print('API error: '+ miners_data['error'])	# return -1 if http resp not 200
+		print('API error: http resp not 200')		# return -1 if http resp not 200
 		return -1
 	elif miners_data['status'] == False:			# return -1 if resp status false
 		print('API error: '+ miners_data['data'])
@@ -203,4 +203,4 @@ if __name__ == '__main__':
     # ethtwgpumine()
     nanopoolxmr()
     # checkPay('ethwgpu')
-    # checkPay('nanopoolxmr')
+    checkPay('nanopoolxmr')
