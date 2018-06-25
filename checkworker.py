@@ -78,7 +78,7 @@ def checkPay(pool):
 			print('API error: http resp not 200')		# return -1 if http resp not 200
 			return -1
 		elif miners_data['status'] == False:			# return -1 if resp status false
-			print('API error: '+ miners_data['data'])
+			print('API error: '+ str(miners_data))
 			return -1
 		else: print('Good API Response')
 
